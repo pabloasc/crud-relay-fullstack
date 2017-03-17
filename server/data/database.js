@@ -1,64 +1,69 @@
+class List {
+  constructor(id, name) {
+    this.id = id;
+    this.name = name;
+  }
+}
+
 class User {
-  constructor(id, name, username, website) {
+  constructor(id, name, address, email, age) {
     this.id = id;
     this.name = name;
-    this.username = username;
-    this.website = website;
+    this.address = address;
+    this.email = email;
+    this.age = age;
   }
 }
 
-class Feature {
-  constructor(id, name, description, url) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.url = url;
-  }
-}
-
-const lvarayut = new User(1, 'Varayut Lerdkanlayanawat', 'lvarayut', 'https://github.com/lvarayut/relay-fullstack');
-const features = [
-  new Feature(1, 'React', 'A JavaScript library for building user interfaces.', 'https://facebook.github.io/react'),
-  new Feature(2, 'Relay', 'A JavaScript framework for building data-driven react applications.', 'https://facebook.github.io/relay'),
-  new Feature(3, 'GraphQL', 'A reference implementation of GraphQL for JavaScript.', 'http://graphql.org'),
-  new Feature(4, 'Express', 'Fast, unopinionated, minimalist web framework for Node.js.', 'http://expressjs.com'),
-  new Feature(5, 'Webpack', 'Webpack is a module bundler that packs modules for the browser.', 'https://webpack.github.io'),
-  new Feature(6, 'Babel', 'Babel is a JavaScript compiler. Use next generation JavaScript, today.', 'https://babeljs.io'),
-  new Feature(7, 'PostCSS', 'PostCSS. A tool for transforming CSS with JavaScript.', 'http://postcss.org'),
-  new Feature(8, 'MDL', 'Material Design Lite lets you add a Material Design to your websites.', 'http://www.getmdl.io')
+const userList = new List(1, 'User List');
+var users = [
+  new User(1, 'Dave', 'Palm Street 45', 'dave@gmail.com', '15'),
+  new User(2, 'Paul', 'Palm Street 45', 'paul@gmail.com', '31'),
+  new User(3, 'Carl', 'Palm Street 45', 'carl@gmail.com', '35'),
+  new User(4, 'Pete', 'Palm Street 45', 'pete@gmail.com', '65'),
+  new User(5, 'Joey', 'Palm Street 45', 'joey@gmail.com', '11'),
+  new User(6, 'Bob', 'Palm Street 45', 'bob@gmail.com', '13'),
+  new User(7, 'Chris', 'Palm Street 45', 'chris@gmail.com', '4'),
+  new User(8, 'Roy', 'Palm Street 45', 'roy@gmail.com', '82')
 ];
 
 /*
-* Add feature in memory
+* Add users in memory
 */
 
-let curFeatures = 9;
-function addFeature(name, description, url) {
-  const newFeature = new Feature(curFeatures, name, description, url);
-  features.push(newFeature);
-  newFeature.id = curFeatures;
-  curFeatures += 1;
-  return newFeature;
+let curUsers = 9;
+function addUser(name, address, email, age) {
+  const newUser = new User(curUsers, name, address, email, age);
+  users.push(newUser);
+  newUser.id = curUsers;
+  curUsers += 1;
+  return newUser;
 }
 
+function deleteUser(email) {
+  users = users.filter(function(User) {
+    return User.email !== email;
+  });
+}
+
+function getList(id) {
+  return id === userList.id ? userList : null;
+}
 
 function getUser(id) {
-  return id === lvarayut.id ? lvarayut : null;
+  return users.find(w => w.id === id);
 }
 
-function getFeature(id) {
-  return features.find(w => w.id === id);
-}
-
-function getFeatures() {
-  return features;
+function getUsers() {
+  return users;
 }
 
 export {
+  List,
   User,
-  Feature,
+  getList,
   getUser,
-  getFeature,
-  getFeatures,
-  addFeature
+  getUsers,
+  addUser,
+  deleteUser
 };

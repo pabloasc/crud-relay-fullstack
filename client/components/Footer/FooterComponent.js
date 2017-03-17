@@ -11,7 +11,6 @@ export default class Footer extends React.Component {
     return (
       <MDLFooter className={styles.root} size='mini'>
         <FooterSection type='middle'>
-          <span>Handcrafted with ♥ by <a href={this.props.viewer.website}> @{this.props.viewer.username}</a></span>
         </FooterSection>
       </MDLFooter>
     );

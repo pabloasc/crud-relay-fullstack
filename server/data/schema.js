@@ -23,12 +23,13 @@ import {
 } from 'graphql-relay';
 
 import {
+  List,
   User,
-  Feature,
+  getList,
   getUser,
-  getFeature,
-  getFeatures,
-  addFeature
+  getUsers,
+  addUser,
+  deleteUser
 } from './database';
 
 
@@ -41,18 +42,18 @@ import {
 const { nodeInterface, nodeField } = nodeDefinitions(
   (globalId) => {
     const { type, id } = fromGlobalId(globalId);
-    if (type === 'User') {
+    if (type === 'List') {
+      return getList(id);
+    } else if (type === 'User') {
       return getUser(id);
-    } else if (type === 'Feature') {
-      return getFeature(id);
     }
     return null;
   },
   (obj) => {
-    if (obj instanceof User) {
+    if (obj instanceof List) {
+      return listType;
+    } else if (obj instanceof User) {
       return userType;
-    } else if (obj instanceof Feature) {
-      return featureType;
     }
     return null;
   }
@@ -62,45 +63,45 @@ const { nodeInterface, nodeField } = nodeDefinitions(
  * Define your own types here
  */
 
-const userType = new GraphQLObjectType({
-  name: 'User',
-  description: 'A person who uses our app',
+const listType = new GraphQLObjectType({
+  name: 'List',
+  description: 'A kind of list',
   fields: () => ({
-    id: globalIdField('User'),
-    features: {
-      type: featureConnection,
-      description: 'Features that I have',
+    id: globalIdField('list'),
+    users: {
+      type: userConnection,
+      description: 'Users that belongs to this list',
       args: connectionArgs,
-      resolve: (_, args) => connectionFromArray(getFeatures(), args)
+      resolve: (_, args) => connectionFromArray(getUsers(), args)
     },
-    username: {
+    name: {
       type: GraphQLString,
-      description: 'Users\'s username'
-    },
-    website: {
-      type: GraphQLString,
-      description: 'User\'s website'
+      description: 'List\'s name'
     }
   }),
   interfaces: [nodeInterface]
 });
 
-const featureType = new GraphQLObjectType({
-  name: 'Feature',
-  description: 'Feature integrated in our starter kit',
+const userType = new GraphQLObjectType({
+  name: 'User',
+  description: 'Users added by default',
   fields: () => ({
-    id: globalIdField('Feature'),
+    id: globalIdField('User'),
     name: {
       type: GraphQLString,
-      description: 'Name of the feature'
+      description: 'Name of user'
     },
-    description: {
+    address: {
       type: GraphQLString,
-      description: 'Description of the feature'
+      description: 'Address of the user'
     },
-    url: {
+    email: {
       type: GraphQLString,
-      description: 'Url of the feature'
+      description: 'Email of the user'
+    },
+    age: {
+      type: GraphQLString,
+      description: 'Age the user'
     }
   }),
   interfaces: [nodeInterface]
@@ -109,35 +110,60 @@ const featureType = new GraphQLObjectType({
 /**
  * Define your own connection types here
  */
-const { connectionType: featureConnection, edgeType: featureEdge } = connectionDefinitions({ name: 'Feature', nodeType: featureType });
+const { connectionType: userConnection, edgeType: userEdge } = connectionDefinitions({ name: 'User', nodeType: userType });
 
 /**
- * Create feature example
+ * Add user mutation
  */
 
-const addFeatureMutation = mutationWithClientMutationId({
-  name: 'AddFeature',
+const addUserMutation = mutationWithClientMutationId({
+  name: 'AddUser',
   inputFields: {
     name: { type: new GraphQLNonNull(GraphQLString) },
-    description: { type: new GraphQLNonNull(GraphQLString) },
-    url: { type: new GraphQLNonNull(GraphQLString) },
+    address: { type: new GraphQLNonNull(GraphQLString) },
+    email: { type: new GraphQLNonNull(GraphQLString) },
+    age: { type: new GraphQLNonNull(GraphQLString) }
   },
 
   outputFields: {
-    featureEdge: {
-      type: featureEdge,
+    userEdge: {
+      type: userEdge,
       resolve: (obj) => {
-        const cursorId = cursorForObjectInConnection(getFeatures(), obj);
+        const cursorId = cursorForObjectInConnection(getUsers(), obj);
         return { node: obj, cursor: cursorId };
       }
     },
     viewer: {
-      type: userType,
-      resolve: () => getUser(1)
+      type: listType,
+      resolve: () => getList(1)
     }
   },
 
-  mutateAndGetPayload: ({ name, description, url }) => addFeature(name, description, url)
+  mutateAndGetPayload: ({ name, address, email, age }) => addUser(name, address, email, age)
+});
+
+/**
+ * Delete user mutation
+ */
+
+const deleteUserMutation = mutationWithClientMutationId({
+  name: 'DeleteUser',
+  inputFields: {
+    email: { type: new GraphQLNonNull(GraphQLString) }
+  },
+
+  outputFields: {
+    DeletedUser: {
+      type: GraphQLID,
+      resolve: ({id}) => id,
+    },
+    viewer: {
+      type: listType,
+      resolve: () => getList(1)
+    }
+  },
+
+  mutateAndGetPayload: ({ email }) => deleteUser(email)
 });
 
 
@@ -151,8 +177,8 @@ const queryType = new GraphQLObjectType({
     node: nodeField,
     // Add your own root fields here
     viewer: {
-      type: userType,
-      resolve: () => getUser(1)
+      type: listType,
+      resolve: () => getList(1)
     }
   })
 });
@@ -164,8 +190,9 @@ const queryType = new GraphQLObjectType({
 const mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
-    addFeature: addFeatureMutation
-    // Add your own mutations here
+    addUser: addUserMutation,
+    deleteUser: deleteUserMutation
+    
   })
 });
 

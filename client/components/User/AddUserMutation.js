@@ -1,26 +1,28 @@
 import Relay from 'react-relay';
 
-class AddFeatureMutation extends Relay.Mutation {
+class AddUserMutation extends Relay.Mutation {
 
   getMutation() {
     return Relay.QL`
-      mutation { addFeature }
+      mutation { addUser }
     `;
   }
 
   getVariables() {
     return {
+      id: this.props.id,
       name: this.props.name,
-      description: this.props.description,
-      url: this.props.url
+      address: this.props.address,
+      email: this.props.email,
+      age: this.props.age
     };
   }
 
   getFatQuery() {
     return Relay.QL`
-      fragment on AddFeaturePayload {
-        featureEdge,
-        viewer { features }
+      fragment on AddUserPayload {
+        userEdge,
+        viewer { users }
       }
     `;
   }
@@ -30,8 +32,8 @@ class AddFeatureMutation extends Relay.Mutation {
       type: 'RANGE_ADD',
       parentName: 'viewer',
       parentID: this.props.viewerId,
-      connectionName: 'features',
-      edgeName: 'featureEdge',
+      connectionName: 'users',
+      edgeName: 'userEdge',
       rangeBehaviors: {
         '': 'append',
       },
@@ -39,4 +41,4 @@ class AddFeatureMutation extends Relay.Mutation {
   }
 }
 
-export default AddFeatureMutation;
+export default AddUserMutation;

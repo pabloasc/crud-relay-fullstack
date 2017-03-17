@@ -1,18 +1,19 @@
 import Relay from 'react-relay';
-import Feature from './FeatureComponent';
+import User from './UserComponent';
 
-export default Relay.createContainer(Feature, {
+export default Relay.createContainer(User, {
   fragments: {
     viewer: () => Relay.QL`
-      fragment on User {
+      fragment on List {
         id,
-        features(first: 20) {
+        users(first: 100) {
           edges {
             node {
               id
               name
-              description
-              url
+              address
+              email
+              age
             }
           }
         }
