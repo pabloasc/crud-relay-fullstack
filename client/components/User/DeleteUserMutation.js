@@ -10,6 +10,7 @@ class DeleteUserMutation extends Relay.Mutation {
 
   getVariables() {
     return {
+      id: this.props.id,
       email: this.props.email
     };
   }
@@ -17,8 +18,8 @@ class DeleteUserMutation extends Relay.Mutation {
   getFatQuery() {
     return Relay.QL`
       fragment on DeleteUserPayload {
-        DeletedUser,
         viewer { users },
+        DeletedUser,
       }
     `;
   }

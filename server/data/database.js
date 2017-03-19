@@ -40,18 +40,28 @@ function addUser(name, address, email, age) {
   return newUser;
 }
 
-function deleteUser(email) {
+function updateUser(name, address, email, oldEmail, age) {
+  var User = users.find(w => w.email === oldEmail);
+  User.name = name;
+  User.address = address;
+  User.email = email;
+  User.age = age;
+  return User;
+}
+
+function deleteUser(id, email) {
   users = users.filter(function(User) {
     return User.email !== email;
   });
+  return { id };
 }
 
 function getList(id) {
   return id === userList.id ? userList : null;
 }
 
-function getUser(id) {
-  return users.find(w => w.id === id);
+function getUser(email) {
+  return users.find(w => w.email === email);
 }
 
 function getUsers() {
@@ -65,5 +75,6 @@ export {
   getUser,
   getUsers,
   addUser,
-  deleteUser
+  deleteUser,
+  updateUser
 };

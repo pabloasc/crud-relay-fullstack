@@ -29,7 +29,8 @@ import {
   getUser,
   getUsers,
   addUser,
-  deleteUser
+  deleteUser,
+  updateUser
 } from './database';
 
 
@@ -143,12 +144,41 @@ const addUserMutation = mutationWithClientMutationId({
 });
 
 /**
+ * Update user mutation
+ */
+
+const updateUserMutation = mutationWithClientMutationId({
+  name: 'UpdateUser',
+  inputFields: {
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    address: { type: new GraphQLNonNull(GraphQLString) },
+    email: { type: new GraphQLNonNull(GraphQLString) },
+    oldEmail: { type: new GraphQLNonNull(GraphQLString) },
+    age: { type: new GraphQLNonNull(GraphQLString) }
+  },
+
+  outputFields: {
+    user: {
+      type: userType,
+      resolve: ({email}) => getUser(email),
+    },
+    viewer: {
+      type: listType,
+      resolve: () => getList(1)
+    }
+  },
+
+  mutateAndGetPayload: ({ name, address, email, oldEmail, age }) => updateUser(name, address, email, oldEmail, age)
+});
+
+/**
  * Delete user mutation
  */
 
 const deleteUserMutation = mutationWithClientMutationId({
   name: 'DeleteUser',
   inputFields: {
+    id: { type: new GraphQLNonNull(GraphQLID) },
     email: { type: new GraphQLNonNull(GraphQLString) }
   },
 
@@ -163,7 +193,7 @@ const deleteUserMutation = mutationWithClientMutationId({
     }
   },
 
-  mutateAndGetPayload: ({ email }) => deleteUser(email)
+  mutateAndGetPayload: ({ id, email }) => deleteUser(id, email)
 });
 
 
@@ -191,7 +221,8 @@ const mutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
     addUser: addUserMutation,
-    deleteUser: deleteUserMutation
+    deleteUser: deleteUserMutation,
+    updateUser: updateUserMutation,
     
   })
 });

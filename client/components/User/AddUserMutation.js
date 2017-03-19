@@ -10,7 +10,6 @@ class AddUserMutation extends Relay.Mutation {
 
   getVariables() {
     return {
-      id: this.props.id,
       name: this.props.name,
       address: this.props.address,
       email: this.props.email,
