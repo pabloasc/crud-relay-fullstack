@@ -68,7 +68,7 @@ export default class User extends React.Component {
     } else if (!emailPattern.test(values.email)) {
       this.setState({ form: { errors: 'Enter a valid email' } });
       isValidated = false;
-    } else {
+    } else if (this.isNew) {
       if (this.props.viewer.users.edges.find(w => w.node.email === values.email)) {
         this.setState({ form: { errors: 'User already exist' } });
         isValidated = false;

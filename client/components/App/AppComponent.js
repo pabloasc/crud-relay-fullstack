@@ -17,9 +17,7 @@ export default class App extends React.Component {
       <div className={styles.root}>
         <Navbar />
         <div className={styles.greeting}>
-          <h1 className={styles.sawasdee}>Sawasdee, Sawasdee!</h1>
-          <p>Always a pleasure scaffolding your apps</p>
-          <img src={yeoman} alt='yeoman' />
+          <h1 className={styles.sawasdee}></h1>
         </div>
         <div className={styles.content}>
           {this.props.children}
