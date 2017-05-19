@@ -10,8 +10,8 @@ The basic installation contains only general technologies needed by most of the 
 
 Clone the repository to your local directory
 ```bash
-$ git clone https://github.com/pabloasc/relay-fullstack.git
-$ cd relay-fullstack
+$ git clone https://github.com/pabloasc/crud-relay-fullstack.git
+$ cd crud-relay-fullstack
 ```
 
 Install all dependencies & Start developing
